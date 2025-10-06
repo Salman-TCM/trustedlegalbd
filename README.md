@@ -1,134 +1,196 @@
-# LegalConsult BD - React Website
+# TrustedLegal BD - Legal Consultancy Website
 
-A professional legal consultancy website built with React, JavaScript, and Tailwind CSS. This website provides legal services information for Bangladesh with multilingual support (English and Bengali).
+A comprehensive legal consultancy website with React frontend and Django REST API backend.
 
-## Features
+## 🚀 Features
 
-- 🌐 **Multilingual Support**: English and Bengali languages
-- 📱 **Responsive Design**: Mobile-first approach with Tailwind CSS
-- ⚡ **Modern React**: Built with React 18 and JavaScript
-- 🎨 **Beautiful UI**: Modern design with smooth animations
-- 💬 **Interactive Chatbot**: AI-powered legal assistant
-- 📞 **Contact Integration**: Direct phone and WhatsApp integration
+### Frontend (React)
+- ⚡ Modern React with functional components and hooks
+- 🎨 Tailwind CSS for responsive design
+- 🌐 Multi-language support (English/Bengali)
+- 📱 Mobile-responsive design
+- 🔄 Real-time data fetching with React Query
+- 📋 Service inquiry forms
+- ⭐ Client testimonials
+- 🎯 Interactive service grid
 
-## Services Offered
+### Backend (Django REST API)
+- 🛡️ JWT-based authentication
+- 📊 Dynamic service management
+- 💼 Service categories and inquiries
+- ⭐ Testimonials system
+- 👥 User management
+- 📖 Auto-generated API documentation
+- 🔐 Role-based permissions
+- 🌐 CORS enabled for frontend integration
 
-- Company Registration (RJSC • Trade License)
-- Business Law (Contracts • Agreements)
-- Tax & VAT (NBR • TIN • Returns)
-- Import/Export (EPB • IRC • Customs)
-- Family Law (Marriage • Divorce)
-- Property Law (Land • Registration)
-- Digital Security (Cyber Law • Privacy)
-- Court Cases (Civil • Criminal)
+## 🏗️ Architecture
 
-## Getting Started
+```
+trustedlegalbd/
+├── src/                    # React Frontend
+│   ├── components/         # React components
+│   ├── contexts/          # React contexts (Auth, Language)
+│   ├── hooks/             # Custom React hooks
+│   ├── services/          # API service functions
+│   └── config/            # Configuration files
+├── backend/               # Django Backend
+│   ├── legal_backend/     # Django project settings
+│   ├── services/          # Services app
+│   ├── authentication/    # Authentication app
+│   └── requirements.txt   # Python dependencies
+└── README.md
+```
+
+## 🚀 Getting Started
 
 ### Prerequisites
+- Node.js 18+
+- Python 3.8+
+- yarn or npm
 
-- Node.js (version 16 or higher)
-- npm or pnpm
-
-### Installation
-
-1. Clone the repository:
+### Frontend Setup
 ```bash
-git clone <repository-url>
-cd legal-consultancy-website
+# Install dependencies
+yarn install
+
+# Start development server
+yarn start
+# Runs on http://localhost:3000
 ```
 
-2. Install dependencies:
+### Backend Setup
 ```bash
-npm install
-# or
-pnpm install
+# Navigate to backend directory
+cd backend
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
+
+# Create superuser (optional)
+python manage.py createsuperuser
+
+# Start server
+python manage.py runserver 8001
+# Runs on http://localhost:8001
 ```
 
-3. Start the development server:
-```bash
-npm start
-# or
-pnpm start
+## 📡 API Endpoints
+
+### Services
+- `GET /api/services/` - List all services
+- `GET /api/services/featured/` - Featured services
+- `GET /api/services/{slug}/` - Service details
+- `GET /api/categories/` - Service categories
+
+### Authentication
+- `POST /api/auth/login/` - User login
+- `POST /api/auth/register/` - User registration
+- `GET /api/auth/profile/` - User profile
+- `POST /api/auth/refresh/` - Refresh token
+
+### Inquiries
+- `POST /api/inquiries/` - Submit inquiry (public)
+- `GET /api/inquiries/` - List inquiries (authenticated)
+
+### Testimonials
+- `GET /api/testimonials/` - List testimonials
+- `GET /api/testimonials/featured/` - Featured testimonials
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create `.env` file in the backend directory:
+```env
+SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-### Building for Production
-
-```bash
-npm run build
-# or
-pnpm build
+### Frontend API Configuration
+Update `src/config/api.js`:
+```javascript
+export const API_BASE_URL = 'http://localhost:8001/api';
 ```
 
-## Project Structure
+## 🎯 Key Features Implemented
 
-```
-src/
-├── components/          # React components
-│   ├── Header.jsx      # Navigation header
-│   ├── Hero.jsx        # Hero section with CTA
-│   ├── ServicesGrid.jsx # Services showcase
-│   ├── ReviewSection.jsx # Client testimonials
-│   ├── Chatbot.jsx     # Interactive chatbot
-│   ├── Footer.jsx      # Site footer
-│   └── ...            # Other components
-├── contexts/           # React contexts
-│   └── LanguageContext.jsx # Language switching
-├── styles/            # CSS files
-│   └── globals.css    # Global styles
-├── lib/               # Utility functions
-│   └── utils.js       # Helper functions
-├── App.jsx            # Main app component
-└── index.jsx          # React entry point
-```
+### Dynamic Service Management
+- Services are fetched from Django backend
+- Real-time pricing and features
+- Category-based organization
+- Admin panel for management
 
-## Technologies Used
+### Service Inquiries
+- Contact form integration
+- Automatic status tracking
+- Admin notification system
+- Client follow-up management
 
-- **React 18**: Modern React with hooks
-- **JavaScript**: Modern ES6+ JavaScript
-- **Tailwind CSS**: Utility-first CSS framework
-- **Lucide React**: Beautiful icons
-- **React Hook Form**: Form handling
-- **Radix UI**: Accessible UI components
+### Authentication System
+- JWT token-based auth
+- User registration/login
+- Protected routes
+- Profile management
 
-## Customization
+### Testimonials
+- Client feedback system
+- Rating system (1-5 stars)
+- Featured testimonials
+- Admin moderation
 
-### Adding New Languages
+## 🛠️ Development Tools
 
-1. Update the `translations` object in `src/contexts/LanguageContext.jsx`
-2. Add new language codes to the `languages` array in `LanguageSwitcher.jsx`
+### Backend
+- Django Admin: `http://localhost:8001/admin/`
+- API Documentation: `http://localhost:8001/api/docs/`
+- ReDoc: `http://localhost:8001/api/redoc/`
 
-### Styling
+### Frontend
+- React Query Devtools (development)
+- ESLint for code quality
+- Tailwind CSS for styling
 
-The project uses Tailwind CSS for styling. You can customize the design by:
-- Modifying `tailwind.config.js` for theme changes
-- Updating component classes for specific styling
-- Adding custom CSS in `src/styles/globals.css`
+## 📱 Mobile Responsiveness
 
-## Deployment
+The website is fully responsive and optimized for:
+- 📱 Mobile devices (320px+)
+- 📟 Tablets (768px+)
+- 💻 Desktop (1024px+)
+- 🖥️ Large screens (1440px+)
 
-This React app can be deployed to any static hosting service:
+## 🔒 Security Features
 
-- **Vercel**: Connect your GitHub repository
-- **Netlify**: Drag and drop the build folder
-- **GitHub Pages**: Use the `gh-pages` package
-- **AWS S3**: Upload the build folder to an S3 bucket
+- JWT authentication with auto-refresh
+- CORS protection
+- Input validation and sanitization
+- Role-based access control
+- Protected API endpoints
 
-## Contributing
+## 🚀 Deployment Ready
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+The application is configured for easy deployment:
+- Environment-based configuration
+- Static file serving
+- Database migrations
+- Production settings
 
-## License
+## 📞 Contact Information
 
-This project is licensed under the MIT License.
+- Website: TrustedLegal BD
+- Email: info@trustedlegal.bd
+- Phone: +880 1913-210664
+- Emergency: 24/7 Legal Support
 
-## Contact
+---
 
-For any questions or support, please contact:
-- Phone: +880-191-321-0664
-- Email: info@legalconsultbd.com 
+Built with ❤️ using React and Django

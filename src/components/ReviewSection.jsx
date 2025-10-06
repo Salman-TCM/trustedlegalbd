@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react"
-import { Star, ChevronLeft, ChevronRight, Award, Users, Clock, Shield } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, Award, Users, Clock, Shield, Loader2 } from "lucide-react"
 import { useLanguage } from "../contexts/LanguageContext"
+import { useFeaturedTestimonials } from "../hooks/useServices"
 
 export default function ReviewSection() {
   const [currentReview, setCurrentReview] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const { t } = useLanguage()
 
-  const reviews = [
+  // Fetch testimonials from backend
+  const { data: backendTestimonials, isLoading: testimonialsLoading, error: testimonialsError } = useFeaturedTestimonials()
+
+  const fallbackReviews = [
     {
       name: "Ahmed Rahman",
       position: "Business Owner",
@@ -76,6 +80,44 @@ export default function ReviewSection() {
     },
   ]
 
+  // Transform backend testimonials to frontend format
+  const transformTestimonial = (testimonial) => {
+    const serviceColorMap = {
+      'Corporate Law': 'blue',
+      'Property Law': 'emerald',
+      'Family Law': 'pink',
+      'Tax Law': 'orange',
+      'Import/Export': 'teal',
+      'Digital Security': 'purple',
+      'Court Cases': 'indigo',
+      'Business Law': 'green',
+    }
+
+    const initials = testimonial.client_name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .substring(0, 2)
+      .toUpperCase()
+
+    return {
+      name: testimonial.client_name,
+      position: testimonial.client_title || 'Valued Client',
+      company: testimonial.client_company || 'Personal Client',
+      rating: testimonial.rating,
+      text: testimonial.content,
+      service: testimonial.service_title || 'Legal Service',
+      location: 'Bangladesh', // Default location since it's not in backend model
+      avatar: initials,
+      color: serviceColorMap[testimonial.service_title] || 'blue',
+    }
+  }
+
+  // Use backend data if available, otherwise fallback
+  const reviews = backendTestimonials?.length > 0 
+    ? backendTestimonials.map(transformTestimonial)
+    : fallbackReviews
+
   // Color utility functions matching ServicesGrid
   const getColorClasses = (color) => {
     const colors = {
@@ -114,6 +156,31 @@ export default function ReviewSection() {
   const goToReview = (index) => {
     setCurrentReview(index)
     setIsAutoPlaying(false)
+  }
+
+  // Show loading state
+  if (testimonialsLoading) {
+    return (
+      <section className="py-20 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              {t("reviews.title")} <span className="text-blue-600">{t("reviews.titleHighlight")}</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("reviews.subtitle")}</p>
+          </div>
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <span className="ml-2 text-gray-600">Loading testimonials...</span>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // Log error but continue with fallback
+  if (testimonialsError) {
+    console.error('Testimonials error:', testimonialsError)
   }
 
   return (
