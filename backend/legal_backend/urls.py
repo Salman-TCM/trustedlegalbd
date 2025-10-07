@@ -20,12 +20,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from services.admin_views import download_template
 
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "TrustedLegal BD API is running"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Admin Excel template downloads
+    path('admin/download-template/<str:model_type>/', download_template, name='download_template'),
     # Health check
     path('api/health/', health_check, name='health_check'),
     # API endpoints

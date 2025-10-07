@@ -27,10 +27,10 @@ services:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     environment:
-      - DEBUG=False
+      - DEBUG=True
       - SECRET_KEY=django-insecure-docker-secret-key-change-in-production
       - ALLOWED_HOSTS=*
-      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:3000,http://localhost:80,http://frontend
+      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:3000,http://localhost:80,http://localhost:83,http://frontend
       - DATABASE_URL=postgresql://trustedlegal_user:trustedlegal_password@db:5432/trustedlegal_db
     ports:
       - "8000:8000"
