@@ -1,12 +1,24 @@
 import { useState, useEffect } from "react"
-import { ArrowRight, Phone, MessageCircle, CheckCircle } from "lucide-react"
+import { ArrowRight, Phone, MessageCircle, CheckCircle, Loader2, Calendar, Clock } from "lucide-react"
 import { useLanguage } from "../contexts/LanguageContext"
+import { useCreateInquiry, useServices } from "../hooks/useServices"
 
 export default function Hero() {
   const [showQuickForm, setShowQuickForm] = useState(false)
   const [formSubmitted, setFormSubmitted] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    message: '',
+    preferredTime: '',
+    urgency: 'normal'
+  })
   const { t } = useLanguage()
+  const createInquiry = useCreateInquiry()
+  const { data: services } = useServices()
 
   useEffect(() => {
     setIsVisible(true)
@@ -16,13 +28,44 @@ export default function Hero() {
     setShowQuickForm(true)
   }
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault()
-    setFormSubmitted(true)
-    setTimeout(() => {
-      setFormSubmitted(false)
-      setShowQuickForm(false)
-    }, 2000)
+    
+    try {
+      await createInquiry.mutateAsync({
+        name: formData.name,
+        email: formData.email || 'noreply@example.com',
+        phone: formData.phone,
+        company: '',
+        message: `Service: ${formData.service}\nPreferred Time: ${formData.preferredTime}\nUrgency: ${formData.urgency}\nAdditional Info: ${formData.message}`,
+        service: services?.find(s => s.title === formData.service)?.id || null
+      })
+      
+      setFormSubmitted(true)
+      setTimeout(() => {
+        setFormSubmitted(false)
+        setShowQuickForm(false)
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          service: '',
+          message: '',
+          preferredTime: '',
+          urgency: 'normal'
+        })
+      }, 3000)
+    } catch (error) {
+      console.error('Error submitting consultation request:', error)
+      alert('Failed to submit your request. Please try again or call us directly.')
+    }
+  }
+
+  const handleInputChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
   }
 
   return (
@@ -115,54 +158,198 @@ export default function Hero() {
       {/* Quick Consultation Modal with animation */}
       {showQuickForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-white rounded-xl p-8 max-w-md w-full animate-scale-in">
+          <div className="bg-white rounded-xl p-8 max-w-lg w-full animate-scale-in max-h-[90vh] overflow-y-auto">
             {formSubmitted ? (
               <div className="text-center animate-fade-in">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4 animate-bounce" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{t("form.requestSent")}</h3>
-                <p className="text-gray-600">{t("form.callBack")}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">✅ Request Sent Successfully!</h3>
+                <p className="text-gray-600 mb-4">We'll call you within 2 hours for your free consultation.</p>
+                <div className="bg-green-50 rounded-lg p-3">
+                  <p className="text-sm text-green-800">📞 For urgent matters, call: +880 1913-210664</p>
+                </div>
               </div>
             ) : (
               <>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">{t("form.title")}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Get Free Legal Consultation</h3>
+                <p className="text-sm text-gray-600 mb-6">Fill this quick form and we'll call you within 2 hours</p>
+                
                 <form onSubmit={handleFormSubmit} className="space-y-4">
+                  {/* Name and Phone in one row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Your Full Name *"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                    />
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Phone Number *"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                    />
+                  </div>
+                  
                   <input
-                    type="text"
-                    placeholder={t("form.name")}
-                    required
-                    className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                    type="email"
+                    name="email"
+                    placeholder="Email (Optional)"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
                   />
-                  <input
-                    type="tel"
-                    placeholder={t("form.phone")}
-                    required
-                    className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-                  />
+                  
                   <select
+                    name="service"
+                    value={formData.service}
+                    onChange={handleInputChange}
                     required
-                    className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
                   >
-                    <option value="">{t("form.selectService")}</option>
-                    <option value="Company Registration">{t("form.companyReg")}</option>
-                    <option value="Business Law">{t("form.businessLaw")}</option>
-                    <option value="Tax & VAT">{t("form.taxVat")}</option>
-                    <option value="Family Law">{t("form.familyLaw")}</option>
-                    <option value="Property Law">{t("form.propertyLaw")}</option>
-                    <option value="Court Cases">{t("form.courtCases")}</option>
+                    <option value="">Select Service You Need *</option>
+                    {services?.map(service => (
+                      <option key={service.id} value={service.title}>
+                        {service.title} - ৳{service.price}
+                      </option>
+                    )) || [
+                      <option key="1" value="Company Registration">Company Registration</option>,
+                      <option key="2" value="Business Law">Business Law</option>,
+                      <option key="3" value="Tax & VAT">Tax & VAT Services</option>,
+                      <option key="4" value="Family Law">Family Law</option>,
+                      <option key="5" value="Property Law">Property Law</option>,
+                      <option key="6" value="Court Cases">Court Cases</option>
+                    ]}
                   </select>
+                  
+                  {/* Preferred Contact Time */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      Preferred Contact Time
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, preferredTime: 'Morning (9-12)' }))}
+                        className={`p-2 text-sm rounded-lg border transition-all ${
+                          formData.preferredTime === 'Morning (9-12)' 
+                            ? 'bg-blue-600 text-white border-blue-600' 
+                            : 'border-gray-300 hover:border-blue-500'
+                        }`}
+                      >
+                        Morning
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, preferredTime: 'Afternoon (12-5)' }))}
+                        className={`p-2 text-sm rounded-lg border transition-all ${
+                          formData.preferredTime === 'Afternoon (12-5)' 
+                            ? 'bg-blue-600 text-white border-blue-600' 
+                            : 'border-gray-300 hover:border-blue-500'
+                        }`}
+                      >
+                        Afternoon
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, preferredTime: 'Evening (5-8)' }))}
+                        className={`p-2 text-sm rounded-lg border transition-all ${
+                          formData.preferredTime === 'Evening (5-8)' 
+                            ? 'bg-blue-600 text-white border-blue-600' 
+                            : 'border-gray-300 hover:border-blue-500'
+                        }`}
+                      >
+                        Evening
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Urgency Level */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">How urgent is your matter?</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, urgency: 'urgent' }))}
+                        className={`p-2 text-sm rounded-lg border transition-all ${
+                          formData.urgency === 'urgent' 
+                            ? 'bg-red-600 text-white border-red-600' 
+                            : 'border-gray-300 hover:border-red-500'
+                        }`}
+                      >
+                        🚨 Urgent
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, urgency: 'normal' }))}
+                        className={`p-2 text-sm rounded-lg border transition-all ${
+                          formData.urgency === 'normal' 
+                            ? 'bg-blue-600 text-white border-blue-600' 
+                            : 'border-gray-300 hover:border-blue-500'
+                        }`}
+                      >
+                        Normal
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, urgency: 'flexible' }))}
+                        className={`p-2 text-sm rounded-lg border transition-all ${
+                          formData.urgency === 'flexible' 
+                            ? 'bg-green-600 text-white border-green-600' 
+                            : 'border-gray-300 hover:border-green-500'
+                        }`}
+                      >
+                        Flexible
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <textarea
+                    name="message"
+                    placeholder="Brief description of your legal matter (Optional)"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                  />
+                  
+                  {/* Trust Indicators */}
+                  <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Free Consultation</span>
+                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">✓ No Spam Calls</span>
+                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full">✓ Expert Lawyers</span>
+                  </div>
+                  
                   <div className="flex gap-3">
                     <button
                       type="submit"
-                      className="flex-1 bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold hover:scale-105 transform"
+                      disabled={createInquiry.isPending}
+                      className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold hover:scale-105 transform disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
-                      {t("form.sendRequest")}
+                      {createInquiry.isPending ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="h-5 w-5 mr-2" />
+                          Book Free Consultation
+                        </>
+                      )}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowQuickForm(false)}
-                      className="px-6 py-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-300"
+                      className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-300"
                     >
-                      {t("form.cancel")}
+                      Cancel
                     </button>
                   </div>
                 </form>

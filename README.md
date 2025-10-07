@@ -44,12 +44,50 @@ trustedlegalbd/
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### 🐳 Quick Start with Docker (Recommended)
+
+#### Prerequisites
+- Docker 20.0+
+- Docker Compose 2.0+
+
+#### One-Command Deployment
+```bash
+# Development environment
+./deploy.sh dev
+
+# Production environment
+./deploy.sh prod
+```
+
+**Deployed URLs:**
+- Frontend: http://localhost
+- Backend API: http://localhost:8000
+- Admin Panel: http://localhost:8000/admin
+- API Documentation: http://localhost:8000/api/docs
+
+#### Manual Docker Commands
+```bash
+# Development
+docker-compose up --build -d
+
+# Production
+docker-compose -f docker-compose.prod.yml up --build -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+### 💻 Manual Setup (Alternative)
+
+#### Prerequisites
 - Node.js 18+
 - Python 3.8+
 - yarn or npm
 
-### Frontend Setup
+#### Frontend Setup
 ```bash
 # Install dependencies
 yarn install
@@ -59,7 +97,7 @@ yarn start
 # Runs on http://localhost:3000
 ```
 
-### Backend Setup
+#### Backend Setup
 ```bash
 # Navigate to backend directory
 cd backend
@@ -176,11 +214,40 @@ The website is fully responsive and optimized for:
 - Role-based access control
 - Protected API endpoints
 
-## 🚀 Deployment Ready
+## 🚀 Deployment
 
-The application is configured for easy deployment:
+### 🐳 Docker Deployment (Recommended)
+
+The application comes with complete Docker support for easy deployment:
+
+```bash
+# Quick deployment
+./deploy.sh dev    # Development environment
+./deploy.sh prod   # Production environment
+
+# Management commands
+./deploy.sh health  # Health check
+./deploy.sh logs    # View logs
+./deploy.sh backup  # Backup database
+./deploy.sh stop    # Stop services
+```
+
+**Features:**
+- Multi-stage Docker builds
+- PostgreSQL database
+- Nginx reverse proxy
+- SSL/TLS ready
+- Health checks
+- Automated backups
+- Production optimizations
+
+See [DOCKER.md](DOCKER.md) for detailed deployment guide.
+
+### 🌐 Manual Deployment
+
+The application is also configured for traditional deployment:
 - Environment-based configuration
-- Static file serving
+- Static file serving with WhiteNoise
 - Database migrations
 - Production settings
 
