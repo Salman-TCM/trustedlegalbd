@@ -1,4 +1,8 @@
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+// Get base URL from environment variable
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+// Ensure URL doesn't have trailing slash and add /api
+export const API_BASE_URL = `${BASE_URL.replace(/\/$/, '')}/api`;
 
 export const API_ENDPOINTS = {
   // Authentication

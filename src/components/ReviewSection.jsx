@@ -189,9 +189,9 @@ export default function ReviewSection() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            {t("reviews.title")} <span className="text-blue-600">{t("reviews.titleHighlight")}</span>
+            What Our <span className="text-blue-600">Happy Clients</span> Say
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("reviews.subtitle")}</p>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">Real reviews from real people who got their legal work done professionally and stress-free</p>
         </div>
 
         {/* Main Review Card */}
@@ -285,18 +285,31 @@ export default function ReviewSection() {
 
         {/* Call to Action */}
         <div className="text-center bg-blue-600 rounded-xl p-8 md:p-12 text-white">
-          <h3 className="text-3xl font-bold mb-4">{t("reviews.ctaTitle")}</h3>
-          <p className="text-xl mb-8 opacity-90">{t("reviews.ctaSubtitle")}</p>
+          <h3 className="text-3xl font-bold mb-4">Ready to Get Legal Help?</h3>
+          <p className="text-xl mb-8 opacity-90">Join 500+ satisfied clients who got their legal work done professionally</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 transition-all duration-300 font-bold text-lg hover:scale-105 transform">
-              {t("reviews.ctaButton")}
-            </button>
-            <a
-              href="tel:+8801913210664"
-              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-300 font-bold text-lg"
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 transition-all duration-300 font-bold text-lg hover:scale-105 transform"
             >
-              {t("reviews.ctaCall")}
-            </a>
+              📞 Get Free Consultation
+            </button>
+            <div className="flex gap-3">
+              <a
+                href="tel:+8801913210664"
+                className="bg-transparent border-2 border-white text-white px-6 py-4 rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-300 font-bold text-lg flex items-center"
+              >
+                📞 Call Now
+              </a>
+              <a
+                href="https://wa.me/8801913210664?text=Hi! I saw your reviews and want to get legal help. Please provide me details."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-600 border-2 border-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 hover:border-green-700 transition-all duration-300 font-bold text-lg flex items-center"
+              >
+                💬 WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </div>

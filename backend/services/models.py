@@ -37,7 +37,7 @@ class Service(models.Model):
     price_unit = models.CharField(max_length=50, default='per case', blank=True)
     duration = models.CharField(max_length=100, blank=True, help_text="e.g., '1-2 weeks'")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
-    features = models.JSONField(default=list, help_text="List of service features")
+    features = models.JSONField(default=list, blank=True, help_text="List of service features")
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

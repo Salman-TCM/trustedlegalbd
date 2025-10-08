@@ -56,7 +56,7 @@ export default function ServiceInquiryModal({ isOpen, onClose, service }) {
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-gray-900">
-              Inquire About {service?.title}
+              Get Help with {service?.title}
             </h3>
             <button
               onClick={onClose}
@@ -66,10 +66,25 @@ export default function ServiceInquiryModal({ isOpen, onClose, service }) {
             </button>
           </div>
           {service?.price && (
-            <p className="text-sm text-gray-600 mt-2">
-              Starting from ৳{service.price} {service.price_unit}
-            </p>
+            <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-800 font-medium">
+                💰 Service Fee: ৳{service.price} {service.price_unit}
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                📞 Free consultation included • ⚡ Quick processing • 🛡️ 100% legal protection
+              </p>
+            </div>
           )}
+          <div className="mt-3 space-y-2">
+            <p className="text-sm text-gray-600">
+              Our experts will contact you within 2 hours to discuss your requirements and provide a free consultation.
+            </p>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ No spam calls</span>
+              <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">✓ Free consultation</span>
+              <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full">✓ Expert advice</span>
+            </div>
+          </div>
         </div>
 
         {/* Form */}
@@ -151,6 +166,13 @@ export default function ServiceInquiryModal({ isOpen, onClose, service }) {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Describe your legal requirements..."
             />
+            <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+              <p className="text-xs text-blue-700 font-medium mb-1">💡 Helpful tip:</p>
+              <p className="text-xs text-blue-600">
+                Please mention: 1) Urgency level, 2) Current situation, 3) What outcome you need. 
+                Don't worry about legal terms - we'll guide you through everything!
+              </p>
+            </div>
           </div>
 
           {/* Footer */}

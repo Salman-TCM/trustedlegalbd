@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Import {{ model_name }} from Excel</h1>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <fieldset class="module aligned">
+            <h2>Upload Excel File</h2>
+            
+            <div class="form-row">
+                <label for="id_excel_file" class="required">Excel file:</label>
+                <input type="file" name="excel_file" id="id_excel_file" accept=".xlsx,.xls" required>
+                <p class="help">Select an Excel file to import {{ model_name }}</p>
+            </div>
+            
+            <div class="form-row">
+                <h3>Excel Format Requirements:</h3>
+                {% if model_type == 'category' %}
+                <p>The Excel file should have a sheet named "Service Categories" with the following columns:</p>
+                <ul>
+                    <li><strong>ID</strong> - (Optional) Existing category ID for updates</li>
+                    <li><strong>Name</strong> - Category name (Required)</li>
+                    <li><strong>Description</strong> - Category description</li>
+                    <li><strong>Icon</strong> - Icon class or name</li>
+                    <li><strong>Order</strong> - Display order (number)</li>
+                </ul>
+                {% else %}
+                <p>The Excel file should have a sheet named "Services" with the following columns:</p>
+                <ul>
+                    <li><strong>ID</strong> - (Optional) Existing service ID for updates</li>
+                    <li><strong>Title</strong> - Service title (Required)</li>
+                    <li><strong>Slug</strong> - URL slug (auto-generated if empty)</li>
+                    <li><strong>Category</strong> - Category name (must exist)</li>
+                    <li><strong>Short Description</strong> - Brief description</li>
+                    <li><strong>Full Description</strong> - Detailed description</li>
+                    <li><strong>Features</strong> - Comma-separated list of features (e.g., "Feature 1, Feature 2, Feature 3")</li>
+                    <li><strong>Price</strong> - Service price (number)</li>
+                    <li><strong>Price Unit</strong> - e.g., "per hour", "fixed"</li>
+                    <li><strong>Duration</strong> - Service duration</li>
+                    <li><strong>Icon</strong> - Icon class or name</li>
+                    <li><strong>Status</strong> - active/inactive</li>
+                    <li><strong>Order</strong> - Display order (number)</li>
+                </ul>
+                {% endif %}
+                
+                <p class="help">
+                    <strong>Note:</strong> If an ID is provided and exists, the record will be updated. 
+                    Otherwise, a new record will be created.
+                </p>
+            </div>
+            
+            <div class="form-row">
+                <a href="{% url 'download_template' model_type %}" class="button">
+                    Download Sample Template
+                </a>
+            </div>
+        </fieldset>
+        
+        <div class="submit-row">
+            <input type="submit" value="Import" class="default" name="_import">
+            <a href="{{ cancel_url }}" class="button cancel-link">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
