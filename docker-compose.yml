@@ -47,12 +47,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      args:
+        - REACT_APP_API_URL=http://localhost:8000
+        - REACT_APP_API_TIMEOUT=30000
+        - REACT_APP_ENVIRONMENT=development
     ports:
       - "83:80"
     depends_on:
       - backend
     environment:
       - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_API_TIMEOUT=30000
+      - REACT_APP_ENVIRONMENT=development
 
   # Nginx Reverse Proxy (Optional - for production)
   nginx:
