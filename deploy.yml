@@ -1,0 +1,54 @@
+# Deployment configuration for TrustedLegal BD
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-trustedlegal_db}
+      POSTGRES_USER: ${DB_USER:-trustedlegal_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-trustedlegal_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-trustedlegal_user} -d ${DB_NAME:-trustedlegal_db}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Django Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    environment:
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - DATABASE_URL=postgresql://${DB_USER:-trustedlegal_user}:${DB_PASSWORD:-trustedlegal_password}@db:5432/${DB_NAME:-trustedlegal_db}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  # React Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:8000}
+        - REACT_APP_API_TIMEOUT=${REACT_APP_API_TIMEOUT:-30000}
+        - REACT_APP_ENVIRONMENT=${REACT_APP_ENVIRONMENT:-production}
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
