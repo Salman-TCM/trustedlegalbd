@@ -25,12 +25,27 @@ from services.admin_views import download_template
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "TrustedLegal BD API is running"})
 
+def root_view(request):
+    return JsonResponse({
+        "message": "TrustedLegal BD Backend API", 
+        "status": "running",
+        "endpoints": {
+            "health": "/api/health/",
+            "auth": "/api/auth/",
+            "services": "/api/",
+            "admin": "/admin/",
+            "docs": "/api/docs/"
+        }
+    })
+
 urlpatterns = [
+    path('', root_view, name='root'),
     path('admin/', admin.site.urls),
     # Admin Excel template downloads
     path('admin/download-template/<str:model_type>/', download_template, name='download_template'),
     # Health check
     path('api/health/', health_check, name='health_check'),
+    path('health/', health_check, name='health_check_simple'),
     # API endpoints
     path('api/auth/', include('authentication.urls')),
     path('api/', include('services.urls')),
